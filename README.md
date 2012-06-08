@@ -16,22 +16,22 @@ modified  verion of Infochimps awesome install_from cookbook
  [http://github.com/infochimps-cookbooks/install_from]. It has been
  heavily refactored and extended to meet different use cases.
 
-Given a project available at this site
+Given a simple project archive available at a url:
 
-  ark 'pig' do
-    url 'http://apache.org/pig/pig-0.8.0.tar.gz'
-  end
+    ark 'pig' do
+      url 'http://apache.org/pig/pig-0.8.0.tar.gz'
+    end
 
 this provider will
 
 * fetch  it to to `/var/cache/chef/`
 * unpack it to the default path  (`/usr/local/pig-0.8.0`)
 * create a symlink for `:home_dir` (`/usr/local/pig`) pointing to path
-* add specified binary commands to the enviroment PATH variable
+* add specified binary commands to the enviroment `PATH` variable
 
-By default, the ark will not run again if the :path is not
+By default, the ark will not run again if the `:path` is not
 empty. Ark provides many actions to accommodate different use cases,
-such as :dump, :cherry_pick, :put, and :install_with_make.
+such as `:dump`, `:cherry_pick`, `:put`, and `:install_with_make`.
 
 At this time ark only handles files available from URLs. It does not
 handle local files.
