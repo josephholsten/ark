@@ -54,49 +54,55 @@ Actions
 =======
 
 - `:install`: extracts the file and creates a 'friendly' symbolic link
-  to the extracted directory path
-- `:install_with_make`: extracts the archive to a path, runs make, and
-  make install. It does _not_ run the configure step at this time
+  to the extracted directory path.
+- `:install_with_make`: extracts the archive to a path, runs `make`, and
+  `make install`. It does _not_ run the configure step at this time.
 - `:dump`: strips all directories from the archive and dumps the
-  contained files into a specified path
+  contained files into a specified path.
 - `:cherry_pick`: extract a specified file from an archive and places
-  in specified path
+  in specified path.
 - `:put`: extract the archive to a specified path, does not create any
-  symbolic links
-- `:remove`: removes the extracted directory and related symlink #TODO
+  symbolic links.
 
 # :put
 
+Extract the archive to a specified path, does not create any symbolic links.
+
 ## Relevant Attribute Parameters
 
-- `path`: path to extract to, defaults to '/usr/local'
-- `has_binaries`: array of binary commands to symlink to
-  /usr/local/bin/, you must specify the relative path example: [ 'bin/java', 'bin/javaws' ]
-- `append_env_path`: boolean, if true, append the ./bin directory of the
-  extracted directory to the global PATH variable for all users
+- `path`: path to extract to.
+  - Default: `/usr/local`
+- `has_binaries`: array of binary commands to symlink into `/usr/local/bin/`,
+  you must specify the relative path.
+  - Example: `[ 'bin/java', 'bin/javaws' ]`
+- `append_env_path`: boolean, if true, append the `./bin` directory of the
+  extracted directory to the global `PATH` variable for all users.
 
 # :dump
 
+Strips all directories from the archive and dumps the contained files into a specified path.
 
 NOTE: This currently only works for zip archives
 
 ## Relevant Attribute Parameters
 
-- `path`: path to dump files to 
-- `mode`: file mode for app_home, is an integer
+- `path`: path to dump files to.
+- `mode`: file mode for `app_home`, as an integer.
+  - Example: `0775`
 - `creates`: if you are appending files to a given directory, ark
   needs a condition to test whether the file has already been
   extracted. You can specify with creates, a file whose existence
   indicates the ark has previously been extracted and does not need to
-  be extracted again
+  be extracted again.
 
 # :cherry_pick
 
+Extract a specified file from an archive and places in specified path.
 
 ## Relevant Attribute Parameters
 
-- `path`: directory to place file in
-- `creates`: specific file to cherry-pick
+- `path`: directory to place file in.
+- `creates`: specific file to cherry-pick.
 
 
 ark
@@ -104,42 +110,47 @@ ark
 
 # Attribute Parameters
 
-- `name`: name of the package, defaults to the resource name
+- `name`: name of the package, defaults to the resource name.
 - `url`: url for tarball, `.tar.gz`, `.bin` (oracle-specific), `.war`, and `.zip`
   currently supported. Also supports special syntax
   `:name:version:apache_mirror:` that will auto-magically construct
-  download url from the apache mirrors site
-- `version`: software version, required
-- `checksum`: sha256 checksum, used for security 
-- `mode`: file mode for `app_home`, is an integer TODO
-- `prefix_root`: default `prefix_root`, for use with `:install*` actions
-- `prefix_home`: default directory prefix for a friendly symlink to the path, for
-  example  `/usr/local/maven` -> `/usr/local/maven-2.2.1`
-- `prefix_bin`: default directory to place a symlink to a binary
-  command, example `/opt/bin/mvn` ->
-  `/opt/maven-2.2.1/bin/mvn`, where the `prefix_bin` is `/opt/bin`
-- `path`: path to extract the ark to, by default is
-  `/usr/local/<name>-<version>` for the `:install`, `:install_with_make` actions
-  the `:install*` actions overwrite any user-provided values for `:path`
-- `home_dir`: symbolic link to the path `:prefix_root/:name-:version`,
-  defaults to `:prefix_root/:name`, does not apply to `:dump`, `:put`, or
-  `:cherry_pick` actions
+  download url from the apache mirrors site.
+- `version`: software version, required.
+- `checksum`: sha256 checksum, used for security .
+- `mode`: file mode for `app_home`, is an integer.
+- `prefix_root`: default `prefix_root`, for use with
+  `:install*` actions.
+- `prefix_home`: default directory prefix for a friendly symlink to the path.
+  - Example: `/usr/local/maven` -> `/usr/local/maven-2.2.1`
+- `prefix_bin`: default directory to place a symlink to a
+  binary command.
+  - Example: `/opt/bin/mvn` -> `/opt/maven-2.2.1/bin/mvn`, where the `prefix_bin` is `/opt/bin`
+- `path`: path to extract the ark to. The `:install*` actions overwrite any user-provided values for `:path`.
+  - Default: `/usr/local/<name>-<version>` for the `:install`, `:install_with_make` actions
+- `home_dir`: symbolic link to the path `:prefix_root/:name-:version`, does not
+  apply to `:dump`, `:put`, or `:cherry_pick` actions.
+  - Default: `:prefix_root/:name`
 - `has_binaries`: array of binary commands to symlink into
-  `/usr/local/bin/`, you must specify the relative path example: `[ 'bin/java', 'bin/javaws' ]`
-- `append_env_path`: boolean, similar to `has_binaries` but less granular
-  - If true, append the `./bin` directory of the extracted directory to
-  the `PATH` environment  variable for all users, does this by placing a file in `/etc/profile.d/` which will be read by all users
-  be added to the path. The commands are symbolically linked to
-  `/usr/bin/*`. Examples are `mvn`, `java`, `javac`, etc. This option
-  provides more granularity than the boolean option
+  `/usr/local/bin/`, you must specify the relative path.
+  - Example: `[ 'bin/java', 'bin/javaws' ]`
+- `append_env_path`: boolean, similar to `has_binaries` but less granular.
+  If true, append the `./bin` directory of the extracted directory to.
+  the `PATH` environment variable for all users, by placing a file
+  in `/etc/profile.d/`.
+  The commands are symbolically linked into `/usr/bin/*`. This option provides
+  more granularity than the boolean option.
+  - Example: `mvn`, `java`, `javac`, etc.
 - `environment`: hash of environment variables to pass to invoked shell
-  commands like `tar`, `unzip`, `configure`, and `make`
+  commands like `tar`, `unzip`, `configure`, and `make`.
 - `strip_leading_dir`: by default, ark strips the leading directory from
   an archive, which is the default for both `unzip` and `tar` commands 
 - `autoconf_opts`: an array of command line options for use with the GNU
-  `autoconf` script
-- `make_opts`: an array of command line options for use with `make`
-- `owner`: owner of extracted directory, set to `root` by default
+  `autoconf` script.
+  - Example: `[ '--include=/opt/local/include', '--force' ]`
+- `make_opts`: an array of command line options for use with `make`.
+  - Example: `[ '--warn-undefined-variables', '--load-average=2' ]`
+- `owner`: owner of extracted directory.
+  - Default: `root`
 
 # Examples
 
